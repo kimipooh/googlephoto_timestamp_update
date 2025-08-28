@@ -12,6 +12,7 @@ brew install jq
 jq コマンドでJSONファイルから必要なデータを読み取って、exiftool でファイルのタイムスタンプを修正します。
 
 --
+
 This tool for macOS corrects the timestamp (date and time) of Google Photos data exported with Google Takeout (even when extracting specific albums).
 
 To use this tool, you'll need to install the following two tools("exif" and "jq") beforehand:
@@ -74,20 +75,26 @@ If you do not grant executable permissions, you can also run it by adding the sh
 Usage: ./googlephoto_timestamp_update.sh [option] [file/directory]
 
 Options:
-  -h                     Displays this help message.
-  --timezone <offset>    Specifies the time zone offset (e.g., +09:00, -05:00).
-                         If not specified, the default is +09:00.
+ 
+ -h
+ Displays this help message.
+ 
+ -timezone <offset>
+ Specifies the time zone offset (e.g., +09:00, -05:00).
+ If not specified, the default is +09:00.
 
 Arguments:
-  [file/directory]          Specifies the directory to process.
-                       If not specified, the current directory is used.
+
+ [file/directory]
+ Specifies the directory to process.
+ If not specified, the current directory is used.
 
 Example:
-  ./googlephoto_timestamp_update.sh -h
-  ./googlephoto_timestamp_update.sh
-  ./googlephoto_timestamp_update.sh /path/to/photos
-  ./googlephoto_timestamp_update.sh /path/to/photos/file1.jpg
-  ./googlephoto_timestamp_update.sh /path/to/photos/*.jpg
-  ./googlephoto_timestamp_update.sh --timezone -05:00
-  ./googlephoto_timestamp_update.sh --timezone +16:00 /path/to/photos
+*  ./googlephoto_timestamp_update.sh -h
+*  ./googlephoto_timestamp_update.sh
+* ./googlephoto_timestamp_update.sh /path/to/photos
+*  ./googlephoto_timestamp_update.sh /path/to/photos/file1.jpg
+*  ./googlephoto_timestamp_update.sh /path/to/photos/*.jpg
+*  ./googlephoto_timestamp_update.sh --timezone -05:00
+*  ./googlephoto_timestamp_update.sh --timezone +16:00 /path/to/photos
   
