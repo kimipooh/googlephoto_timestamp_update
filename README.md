@@ -1,6 +1,7 @@
 # Summary
 
 このツールは、Google Takeout でエクスポートした Googleフォトのデータ（特定アルバムのみ抽出した場合もOK）のタイムスタンプ（日時）を修正する macOS 用ツールです。
+作ったときの紹介ブログ：https://kitaney-google.blogspot.com/2025/08/macgoogle-takeout-google.html
 
 利用するには、下記の２つのツール（exif, jq）を事前にインストールしておいてください。
 
