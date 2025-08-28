@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Version 1.0
+# Version 1.1
 
 # Default settings
 TARGET_DIR=""
@@ -14,23 +14,23 @@ HELP_MESSAGE="
 Usage: $0 [option] file/directory
 
 Options:
-  -h                     Displays this help message.
-  --timezone <offset>    Specifies the time zone offset (e.g., +09:00, -05:00).
-                         If not specified, the default is +09:00.
+  -h                      Displays this help message.
+  --timezone <offset>     Specifies the time zone offset (e.g., +09:00, -05:00).
+                          If not specified, the default is +09:00.
 
 Arguments:
-  file/directory         Specifies the directory to process.
+  file/directory          Specifies the directory to process.
 
 Example:
   $0 -h
   $0 /path/to/photos
   $0 /path/to/photos/file1.jpg
   $0 /path/to/photos/*.jpg
-  $0 --timezone -05:00
+  $0 --timezone -05:00 /path/to/photos
   $0 --timezone +16:00 /path/to/photos
 "
 
-if ["$1" = ""]; then
+if [ -z "$1" ]; then
     echo "$HELP_MESSAGE"
     exit 0
 fi
@@ -48,6 +48,13 @@ while [ "$#" -gt 0 ]; do
                 shift 2
             else
                 echo "Error: --timezone option requires a value."
+                exit 1
+            fi
+            if [ -n "$1" ]; then
+                TARGET_DIR="$1"
+                shift 1
+            else
+                echo "$HELP_MESSAGE"
                 exit 1
             fi
             ;;
@@ -91,6 +98,24 @@ FIND_PATTERN=${FIND_PATTERN:3}
 
 FIND_COMMAND="find \"$TARGET_DIR\" -type f \\( $FIND_PATTERN \\)"
 
+# Extract timezone hour and minute for date command
+# 例: +09:00 -> +9H, -05:30 -> -5H -30M
+TIMEZONE_HOUR=$(echo "$TIMEZONE_OFFSET" | cut -d':' -f1 | sed 's/^+/+/; s/^-/-/')
+TIMEZONE_MINUTE=$(echo "$TIMEZONE_OFFSET" | cut -d':' -f2 | sed 's/^0+//')
+
+if [ "$TIMEZONE_HOUR" == "+" ]; then
+  TIMEZONE_HOUR_MOD="+"
+elif [ "$TIMEZONE_HOUR" == "-" ]; then
+  TIMEZONE_HOUR_MOD="-"
+else
+  TIMEZONE_HOUR_MOD="$TIMEZONE_HOUR"
+fi
+
+TIMEZONE_MINUTE_MOD=""
+if [ -n "$TIMEZONE_MINUTE" ] && [ "$TIMEZONE_MINUTE" -ne 0 ]; then
+  TIMEZONE_MINUTE_MOD=" -v${TIMEZONE_HOUR_MOD}${TIMEZONE_MINUTE}M"
+fi
+
 eval "$FIND_COMMAND" | while read -r image_file
 do
     echo "---"
@@ -106,8 +131,8 @@ do
             
             datetime_no_tz=$(echo "$datetime_utc" | sed 's/ UTC//')
             
-            # Convert to JST using the `date` command and format as required by ExifTool
-            timestamp_local=$(date -j -v+9H -f "%Y/%m/%d %H:%M:%S" "$datetime_no_tz" "+%Y:%m:%d %H:%M:%S")
+            # Convert to local time using the `date` command and format as required by ExifTool
+            timestamp_local=$(date -j -v"${TIMEZONE_HOUR}H" ${TIMEZONE_MINUTE_MOD} -f "%Y/%m/%d %H:%M:%S" "$datetime_no_tz" "+%Y:%m:%d %H:%M:%S")
             
             # Extract sub-second precision (e.g. `.987`)
             sub_sec=$(echo "$datetime_utc" | grep -o '\.[0-9]\+')
