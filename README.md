@@ -32,6 +32,7 @@ Use the jq command to read the necessary data from the JSON file, and then use e
 3. 特定データにメタ情報（特定データ名.supplemental-metadata.json）があれば、日時を抽出
 4. 抽出した日時を指定したタイムゾーンにそって修正する（デフォルトは日本時間（+09:00）。引数で変更可能）
 5. 修正したに日時を、ファイルの日時として修正する（下記の３つを修正）
+
 *CreateDate: 写真ファイルが作成された日時
 *MofityDate: ファイルが最後に変更された日時
 *DateTimeOriginal: 写真に記録されている映像の日時（EXIF情報）
