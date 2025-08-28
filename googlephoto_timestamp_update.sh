@@ -3,7 +3,7 @@
 # Version 1.0
 
 # Default settings
-TARGET_DIR="."
+TARGET_DIR=""
 TIMEZONE_OFFSET="+09:00"
 
 # Define the list of image file extensions to process as an array
@@ -11,7 +11,7 @@ IMAGE_EXTENSIONS=("jpg" "jpeg" "png" "gif" "tiff" "heic" "mp4" "mov", "webp", "h
 
 # Help message definition
 HELP_MESSAGE="
-Usage: $0 [option] [file/directory]
+Usage: $0 [option] file/directory
 
 Options:
   -h                     Displays this help message.
@@ -19,18 +19,21 @@ Options:
                          If not specified, the default is +09:00.
 
 Arguments:
-  [file/directory]       Specifies the directory to process.
-                         If not specified, the current directory is used.
+  file/directory         Specifies the directory to process.
 
 Example:
   $0 -h
-  $0
   $0 /path/to/photos
   $0 /path/to/photos/file1.jpg
   $0 /path/to/photos/*.jpg
   $0 --timezone -05:00
   $0 --timezone +16:00 /path/to/photos
 "
+
+if ["$1" = ""]; then
+    echo "$HELP_MESSAGE"
+    exit 0
+fi
 
 # 引数の解析
 while [ "$#" -gt 0 ]; do

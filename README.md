@@ -72,7 +72,7 @@ If you do not grant executable permissions, you can also run it by adding the sh
 
 # How to use it
 
-Usage: ./googlephoto_timestamp_update.sh [option] [file/directory]
+Usage: ./googlephoto_timestamp_update.sh [option]  file/directory
 
 Options:
  
@@ -84,12 +84,11 @@ Options:
 
 Arguments:
 
- [file/directory]
-* Specifies the directory to process. If not specified, the current directory is used.
+ file/directory
+* Specifies the directory to process.
 
 Example:
 *  ./googlephoto_timestamp_update.sh -h
-*  ./googlephoto_timestamp_update.sh
 * ./googlephoto_timestamp_update.sh /path/to/photos
 *  ./googlephoto_timestamp_update.sh /path/to/photos/file1.jpg
 *  ./googlephoto_timestamp_update.sh /path/to/photos/*.jpg
