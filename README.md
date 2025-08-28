@@ -76,18 +76,16 @@ Usage: ./googlephoto_timestamp_update.sh [option] [file/directory]
 
 Options:
  
- -h
- Displays this help message.
+ -h 
+ *Displays this help message.
  
  -timezone <offset>
- Specifies the time zone offset (e.g., +09:00, -05:00).
- If not specified, the default is +09:00.
+ * Specifies the time zone offset (e.g., +09:00, -05:00). If not specified, the default is +09:00.
 
 Arguments:
 
  [file/directory]
- Specifies the directory to process.
- If not specified, the current directory is used.
+* Specifies the directory to process. If not specified, the current directory is used.
 
 Example:
 *  ./googlephoto_timestamp_update.sh -h
