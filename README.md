@@ -12,6 +12,11 @@ brew install jq
 
 jq コマンドでJSONファイルから必要なデータを読み取って、exiftool でファイルのタイムスタンプを修正します。
 
+注意点
+下記については対応していません。
+1. ファイル名が長すぎて、Googleによってメタ情報ファイルの名前が変更された場合
+2. Live Photo（静止画と動画がペアで生成される場合、動画については非対応）
+
 --
 
 This tool for macOS corrects the timestamp (date and time) of Google Photos data exported with Google Takeout (even when extracting specific albums).
@@ -23,6 +28,11 @@ brew install exif
 brew install jq
 
 Use the jq command to read the necessary data from the JSON file, and then use exiftool to correct the file's timestamp.
+
+Please note:
+The following are not supported:
+1. When the file name is too long and the meta information file is renamed by Google.
+2. Live Photos (when still images and videos are generated as a pair; videos are not supported).
 
 # Processing flow
 
