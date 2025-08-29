@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Version 1.1
+# Version 1.2
 
 # Default settings
 TARGET_DIR=""
@@ -8,14 +8,19 @@ TIMEZONE_OFFSET="+09:00"
 
 # Define the list of image file extensions to process as an array
 IMAGE_EXTENSIONS=("jpg" "jpeg" "png" "gif" "tiff" "heic" "mp4" "mov", "webp", "hevc", "avi")
+# If IMAGE_Flag value is "1", all files except "json" file extentions begome the target.
+IMAGE_FLAG=""
 
 # Help message definition
 HELP_MESSAGE="
 Usage: $0 [option] file/directory
 
 Options:
-  -h                      Displays this help message.
-  --timezone <offset>     Specifies the time zone offset (e.g., +09:00, -05:00).
+  -h/--help               Displays this help message.
+  -a/--all                All files except "json" file extentions become the target.
+                          If not specified, the default is specific \$IMAGE_EXTENSIONS
+                           file extensions.
+  -tz/--timezone <offset> Specifies the time zone offset (e.g., +09:00, -05:00).
                           If not specified, the default is +09:00.
 
 Arguments:
@@ -28,6 +33,7 @@ Example:
   $0 /path/to/photos/*.jpg
   $0 --timezone -05:00 /path/to/photos
   $0 --timezone +16:00 /path/to/photos
+  $0 -a /path/to/photos/
 "
 
 if [ -z "$1" ]; then
@@ -35,26 +41,22 @@ if [ -z "$1" ]; then
     exit 0
 fi
 
-# 引数の解析
 while [ "$#" -gt 0 ]; do
     case "$1" in
-        -h)
+        -h|--help)
             echo "$HELP_MESSAGE"
             exit 0
             ;;
-        --timezone)
+        -a|--all)
+            IMAGE_FLAG="1"
+            shift 1
+            ;;
+        -tz|--timezone)
             if [ -n "$2" ]; then
                 TIMEZONE_OFFSET="$2"
                 shift 2
             else
                 echo "Error: --timezone option requires a value."
-                exit 1
-            fi
-            if [ -n "$1" ]; then
-                TARGET_DIR="$1"
-                shift 1
-            else
-                echo "$HELP_MESSAGE"
                 exit 1
             fi
             ;;
@@ -64,11 +66,23 @@ while [ "$#" -gt 0 ]; do
             exit 1
             ;;
         *)
-            TARGET_DIR="$1"
+            if [ -z "$TARGET_DIR" ]; then
+                TARGET_DIR="$1"
+            else
+                echo "Error: Unexpected extra argument: $1"
+                echo "$HELP_MESSAGE"
+                exit 1
+            fi
             shift 1
             ;;
     esac
 done
+
+if [ -z "$TARGET_DIR" ]; then
+    echo "Error: TARGET_DIR is required."
+    echo "$HELP_MESSAGE"
+    exit 1
+fi
 
 echo "The timezone offset to use: $TIMEZONE_OFFSET"
 echo "Processing target directory: $TARGET_DIR"
@@ -96,7 +110,13 @@ for ext in "${IMAGE_EXTENSIONS[@]}"; do
 done
 FIND_PATTERN=${FIND_PATTERN:3}
 
-FIND_COMMAND="find \"$TARGET_DIR\" -type f \\( $FIND_PATTERN \\)"
+if [ "$IMAGE_FLAG" = "1" ]; then
+    FIND_COMMAND="find \"$TARGET_DIR\" -type f -not -path \"*.json\""
+else
+    FIND_COMMAND="find \"$TARGET_DIR\" -type f \\( $FIND_PATTERN \\)"
+fi
+
+echo "$FIND_COMMAND"
 
 # Extract timezone hour and minute for date command
 # 例: +09:00 -> +9H, -05:30 -> -5H -30M
@@ -119,7 +139,7 @@ fi
 eval "$FIND_COMMAND" | while read -r image_file
 do
     echo "---"
-    echo "処理中: $image_file"
+    echo "Processing: $image_file"
 
     json_file="${image_file}.supplemental-metadata.json"
 

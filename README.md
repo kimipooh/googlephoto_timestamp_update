@@ -76,10 +76,13 @@ Usage: ./googlephoto_timestamp_update.sh [option]  file/directory
 
 Options:
  
- -h 
+ -h/--help
  *Displays this help message.
- 
- -timezone <offset>
+
+-a/--all 
+*All files except "json" file extentions become the target. If not specified, the default is specific \$IMAGE_EXTENSIONS file extensions.
+
+-tz/--timezone <offset>
  * Specifies the time zone offset (e.g., +09:00, -05:00). If not specified, the default is +09:00.
 
 Arguments:
@@ -94,4 +97,5 @@ Example:
 *  ./googlephoto_timestamp_update.sh /path/to/photos/*.jpg
 *  ./googlephoto_timestamp_update.sh --timezone -05:00
 *  ./googlephoto_timestamp_update.sh --timezone +16:00 /path/to/photos
-  
+*  ./googlephoto_timestamp_update.sh -a /path/to/photos
+
